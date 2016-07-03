@@ -1,0 +1,68 @@
+load expansion pack
+index
+load expansion pack
+./node_modules/data-line-expansion-i2c/index
+create datasource
+poll
+\0
+poll-8Hz
+130
+apply translation
+bc-i2c-input
+\0
+i2c-adxl345
+/dev/i2c-1
+0x53
+0x2d 0x0c
+
+0x32
+6
+poll-8Hz
+apply translation
+bc-i2c-input
+\0
+i2c-hmc5883l
+/dev/i2c-1
+0x1e
+0x00 0x71
+0x01 0x00
+0x02 0x00
+
+0x03    
+6
+poll-8Hz
+apply translation
+buffer-to-ints
+\0
+hmc5883l-ints
+i2c-hmc5883l
+apply translation
+hmc5883l-bytes-to-vector
+\0
+hmc5883l-vector
+hmc5883l-ints
+apply translation
+buffer-to-ints
+\0
+adxl345-ints
+i2c-adxl345
+apply translation
+adxl345-bytes-to-vector
+\0
+adxl345-vector
+adxl345-ints
+apply translation
+flip-z-axis
+\0
+adxl345-corrected-vector
+adxl345-vector
+create datasink
+console
+\0
+adxl345-out
+adxl345-corrected-vector
+create datasink
+console
+\0
+hmc5883l-out
+hmc5883l-vector
