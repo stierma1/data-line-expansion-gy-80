@@ -24,13 +24,33 @@ bc-i2c-input
 i2c-hmc5883l
 /dev/i2c-1
 0x1e
-0x00 0x71
-0x01 0x00
+0x00 0x70
+0x01 0x20
 0x02 0x00
 
 0x03    
 6
 poll-8Hz
+apply translation
+bc-i2c-input
+\0
+i2c-l3g4200d
+/dev/i2c-1
+0x69
+0x20 0x0f
+0x21 0x00
+0x22 0x08
+0x23 0x30
+0x24 0x00
+
+0xa8
+6
+poll-8Hz
+apply translation
+buffer-to-ints
+\0
+l3g4200d-ints
+i2c-l3g4200d
 apply translation
 buffer-to-ints
 \0
@@ -52,6 +72,11 @@ adxl345-bytes-to-vector
 adxl345-vector
 adxl345-ints
 apply translation
+adxl345-bytes-to-vector
+\0
+l3g4200d-vector
+l3g4200d-ints
+apply translation
 flip-z-axis
 \0
 adxl345-corrected-vector
@@ -66,3 +91,60 @@ console
 \0
 hmc5883l-out
 hmc5883l-vector
+apply translation
+label
+\0
+compass-raw-vector
+compass
+hmc5883l-vector
+apply translation
+label
+\0
+accelerometer-raw-vector
+accelerometer
+adxl345-corrected-vector
+apply translation
+label
+\0
+gyroscope-raw-vector
+gyroscope
+l3g4200d-vector
+apply translation
+merge
+\0
+inc-9-dof-raw
+accelerometer-raw-vector
+gyroscope-raw-vector
+apply translation
+merge
+\0
+9-DOF-raw
+inc-9-dof-raw
+compass-raw-vector
+apply translation
+zip
+\0
+accel-compass-vectors
+adxl345-corrected-vector
+hmc5883l-vector
+apply translation
+zip
+\0
+accel-compass-gyro-vectors
+accel-compass-vectors
+l3g4200d-vector
+apply translation
+flatten
+\0
+9DOF-vectors
+accel-compass-gyro-vectors
+create datasink
+console
+\0
+9DOF-out
+9-DOF-raw
+create datasink
+console
+\0
+l3g4200d-out
+l3g4200d-vector
